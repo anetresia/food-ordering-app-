@@ -52,3 +52,4 @@ def downgrade() -> None:
         table_name="users"
     )
     op.drop_table("users")
+    

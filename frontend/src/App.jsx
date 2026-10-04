@@ -1,24 +1,19 @@
-import { useEffect, useState } from "react";
-import { apiFetch } from "./api/api";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
 
 function App() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    apiFetch("/")
-      .then((data) => {
-        setMessage(data.message);
-      })
-      .catch((error) => {
-        setMessage(error.message);
-      });
-  }, []);
-
   return (
-    <div className="container mt-5">
-      <h1>Food Ordering App</h1>
-      <p>{message}</p>
-    </div>
+    <BrowserRouter>
+
+      <Navbar />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+
+    </BrowserRouter>
   );
 }
 

@@ -23,9 +23,10 @@ app = FastAPI(
 # React frontend-kku backend API access panna allow panrom
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173"
-    ],
+allow_origins=[
+    "http://localhost:5173",
+    "https://food-ordering-app-weld-nine.vercel.app"
+],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

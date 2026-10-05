@@ -1,12 +1,8 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
 
-# Database Base
-from app.database import Base
+from app.database import Base, engine
 
 # Models import panrom
 from app.models.category import Category
@@ -15,12 +11,15 @@ from app.models.customer import Customer
 from app.models.order import Order
 from app.models.order_item import OrderItem
 
+
 # Alembic configuration
 config = context.config
+
 
 # Logging configuration
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+
 
 # SQLAlchemy models oda metadata
 target_metadata = Base.metadata
@@ -45,13 +44,8 @@ def run_migrations_offline() -> None:
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
 
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
-
-    with connectable.connect() as connection:
+    # app.database-la create pannina engine-a use panrom
+    with engine.connect() as connection:
 
         context.configure(
             connection=connection,

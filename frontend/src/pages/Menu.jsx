@@ -1,345 +1,328 @@
 import { useEffect, useState } from "react";
-import { apiFetch } from "../api/api";
 import { useCart } from "../context/CartContext";
+import { apiFetch } from "../api/api";
 
 function Menu() {
-  const [foods, setFoods] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  const [search, setSearch] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  // Cart-la food add panna use panrom
   const { addToCart } = useCart();
 
-  // Backend-la irundhu categories load pannum
+  const [foods, setFoods] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
   useEffect(() => {
-    getCategories();
+    loadData();
   }, []);
 
-  // Search/category change aana foods reload pannum
-  useEffect(() => {
-    getFoods();
-  }, [search, categoryId]);
-
-  // GET /categories/
-  async function getCategories() {
-    try {
-      const data = await apiFetch("/categories/");
-      setCategories(data);
-    } catch (error) {
-      setError(error.message);
-    }
-  }
-
-  // GET /foods/
-  async function getFoods() {
+  async function loadData() {
     try {
       setLoading(true);
       setError("");
 
-      let url = "/foods/";
+      const [foodData, categoryData] = await Promise.all([
+        apiFetch("/foods/"),
+        apiFetch("/categories/"),
+      ]);
 
-      const params = new URLSearchParams();
-
-      if (search.trim() !== "") {
-        params.append("search", search.trim());
-      }
-
-      if (categoryId !== "") {
-        params.append("category_id", categoryId);
-      }
-
-      if (params.toString()) {
-        url += `?${params.toString()}`;
-      }
-
-      const data = await apiFetch(url);
-
-      setFoods(data);
-    } catch (error) {
-      setError(error.message);
+      setFoods(foodData);
+      setCategories(categoryData);
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   }
 
-  return (
-    <div>
+  // Search + category filter
+  const filteredFoods = foods.filter((food) => {
+    const matchesSearch = food.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
-      {/* Header */}
-      <section className="bg-light py-5">
-        <div className="container">
+    const matchesCategory =
+      selectedCategory === "All" ||
+      food.category_id === Number(selectedCategory);
 
-          <p className="text-success fw-semibold mb-2">
-            Explore our food
-          </p>
+    return matchesSearch && matchesCategory;
+  });
 
-          <h1 className="fw-bold">
-            Our Menu
-          </h1>
+  // Loading screen
+  if (loading) {
+    return (
+      <div className="container py-5">
+        <div className="text-center py-5">
 
-          <p className="text-muted mb-0">
-            Choose your favourite food and enjoy your meal.
+          <div
+            className="spinner-border text-success"
+            role="status"
+          ></div>
+
+          <p className="text-muted mt-3 mb-0">
+            Loading menu...
           </p>
 
         </div>
-      </section>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        backgroundColor: "#fafaf8",
+        minHeight: "100vh",
+      }}
+    >
+      <div className="container py-5">
+
+        {/* ================= HEADER ================= */}
+
+        <div className="text-center mb-5">
+
+          <p
+            className="text-success fw-semibold mb-2"
+            style={{
+              letterSpacing: "1px",
+            }}
+          >
+            SUVAI MENU
+          </p>
+
+          <h1
+            className="fw-bold mb-3"
+            style={{
+              color: "#172033",
+            }}
+          >
+            Explore Our Menu
+          </h1>
+
+          <p
+            className="text-muted mx-auto"
+            style={{
+              maxWidth: "600px",
+            }}
+          >
+            Discover delicious food prepared with care
+            and choose your favourites.
+          </p>
+
+        </div>
 
 
-      {/* Search and Category Filter */}
-      <section className="py-4">
-        <div className="container">
+        {/* ================= SEARCH + CATEGORY ================= */}
 
-          <div className="row g-3">
+        <div className="row g-3 mb-5">
 
-            {/* Search */}
-            <div className="col-md-8">
+          {/* Search */}
 
-              <label className="form-label fw-semibold">
-                Search Food
-              </label>
+          <div className="col-lg-7">
 
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search food..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              placeholder="Search food..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+              }}
+            />
 
-            </div>
+          </div>
 
 
-            {/* Category */}
-            <div className="col-md-4">
+          {/* Category */}
 
-              <label className="form-label fw-semibold">
-                Category
-              </label>
+          <div className="col-lg-5">
 
-              <select
-                className="form-select"
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-              >
+            <select
+              className="form-select form-select-lg"
+              value={selectedCategory}
+              onChange={(e) =>
+                setSelectedCategory(e.target.value)
+              }
+              style={{
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+              }}
+            >
 
-                <option value="">
-                  All Categories
+              <option value="All">
+                All Categories
+              </option>
+
+              {categories.map((category) => (
+                <option
+                  key={category.id}
+                  value={category.id}
+                >
+                  {category.name}
                 </option>
+              ))}
 
-                {categories.map((category) => (
-                  <option
-                    key={category.id}
-                    value={category.id}
-                  >
-                    {category.name}
-                  </option>
-                ))}
-
-              </select>
-
-            </div>
+            </select>
 
           </div>
 
         </div>
-      </section>
 
 
-      {/* Error Message */}
-      {error && (
-        <div className="container">
+        {/* ================= ERROR ================= */}
 
+        {error && (
           <div className="alert alert-danger">
             {error}
           </div>
-
-        </div>
-      )}
+        )}
 
 
-      {/* Food Section */}
-      <section className="py-4">
-        <div className="container">
+        {/* ================= FOOD CARDS ================= */}
 
-          <div className="d-flex justify-content-between align-items-center mb-4">
+        <div className="row g-4">
 
-            <h2 className="fw-bold mb-0">
-              Available Foods
-            </h2>
+          {filteredFoods.map((food) => (
 
-            <span className="text-muted">
-              {foods.length} item(s)
-            </span>
-
-          </div>
-
-
-          {/* Loading */}
-          {loading && (
-            <div className="text-center py-5">
+            <div
+              className="col-md-6 col-lg-4"
+              key={food.id}
+            >
 
               <div
-                className="spinner-border text-success"
-                role="status"
-              ></div>
+                className="card h-100 border-0 overflow-hidden"
+                style={{
+                  borderRadius: "18px",
+                  boxShadow:
+                    "0 6px 24px rgba(0,0,0,0.07)",
+                }}
+              >
 
-              <p className="text-muted mt-3">
-                Loading foods...
-              </p>
+                {/* ================= FOOD IMAGE ================= */}
 
-            </div>
-          )}
+                <img
+                  src={food.image}
+                  alt={food.name}
+                  className="card-img-top"
+                  style={{
+                    width: "100%",
+                    height: "230px",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
 
 
-          {/* Food Cards */}
-          {!loading && foods.length > 0 && (
+                {/* ================= FOOD DETAILS ================= */}
 
-            <div className="row g-4">
+                <div className="card-body p-4">
 
-              {foods.map((food) => {
-
-                const isAvailable =
-                  food.is_available === true ||
-                  food.is_available === 1;
-
-                // Food name based emoji
-                const foodEmoji =
-                  food.name.toLowerCase().includes("pizza")
-                    ? "🍕"
-                    : food.name.toLowerCase().includes("burger")
-                    ? "🍔"
-                    : "🍽️";
-
-                return (
                   <div
-                    className="col-md-6 col-lg-4"
-                    key={food.id}
+                    className="d-flex justify-content-between align-items-start mb-2"
                   >
 
-                    <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-
-                      {/* Food Image */}
-                      {food.image ? (
-
-                        <img
-                          src={food.image}
-                          alt={food.name}
-                          className="card-img-top"
-                          style={{
-                            height: "220px",
-                            objectFit: "cover",
-                          }}
-                        />
-
-                      ) : (
-
-                        <div
-                          className="bg-light d-flex justify-content-center align-items-center"
-                          style={{
-                            height: "220px",
-                          }}
-                        >
-
-                          <span className="display-1">
-                            {foodEmoji}
-                          </span>
-
-                        </div>
-
-                      )}
+                    <h5
+                      className="fw-bold mb-0"
+                      style={{
+                        color: "#172033",
+                      }}
+                    >
+                      {food.name}
+                    </h5>
 
 
-                      {/* Food Details */}
-                      <div className="card-body">
+                    {/* Availability */}
 
-                        <h5 className="fw-bold">
-                          {food.name}
-                        </h5>
-
-                        <p className="text-muted">
-                          {food.description ||
-                            "Delicious food for you."}
-                        </p>
-
-
-                        <div className="d-flex justify-content-between align-items-center mb-3">
-
-                          <span className="fw-bold text-success fs-5">
-                            Rs. {food.price}
-                          </span>
-
-
-                          {/* Availability */}
-                          {isAvailable ? (
-
-                            <span className="badge bg-success">
-                              Available
-                            </span>
-
-                          ) : (
-
-                            <span className="badge bg-secondary">
-                              Unavailable
-                            </span>
-
-                          )}
-
-                        </div>
-
-
-                        {/* Add to Cart */}
-                        <button
-                          className="btn btn-success w-100"
-                          disabled={!isAvailable}
-                          onClick={() => addToCart(food)}
-                        >
-                          Add to Cart
-                        </button>
-
-                      </div>
-
-                    </div>
+                    {food.is_available ? (
+                      <span className="badge bg-success-subtle text-success">
+                        Available
+                      </span>
+                    ) : (
+                      <span className="badge bg-secondary-subtle text-secondary">
+                        Unavailable
+                      </span>
+                    )}
 
                   </div>
-                );
-              })}
-
-            </div>
-
-          )}
 
 
-          {/* No Foods */}
-          {!loading &&
-            foods.length === 0 &&
-            !error && (
+                  {/* Description */}
 
-              <div className="text-center py-5">
+                  <p
+                    className="text-muted mb-3"
+                    style={{
+                      minHeight: "48px",
+                    }}
+                  >
+                    {food.description ||
+                      "Delicious food prepared for you."}
+                  </p>
 
-                <div className="display-3 mb-3">
-                  🍽️
+
+                  {/* Price + Cart */}
+
+                  <div
+                    className="d-flex justify-content-between align-items-center"
+                  >
+
+                    <h5
+                      className="fw-bold mb-0"
+                      style={{
+                        color: "#16834b",
+                      }}
+                    >
+                      Rs.{" "}
+                      {Number(food.price).toLocaleString()}
+                    </h5>
+
+
+                    <button
+                      className="btn btn-success px-3"
+                      disabled={!food.is_available}
+                      onClick={() => addToCart(food)}
+                      style={{
+                        borderRadius: "10px",
+                      }}
+                    >
+                      {food.is_available
+                        ? "Add to Cart"
+                        : "Unavailable"}
+                    </button>
+
+                  </div>
+
                 </div>
-
-                <h4 className="fw-bold">
-                  No food items found
-                </h4>
-
-                <p className="text-muted">
-                  Try another search or category.
-                </p>
 
               </div>
 
-            )}
+            </div>
+
+          ))}
 
         </div>
-      </section>
 
+
+        {/* ================= NO FOOD ================= */}
+
+        {filteredFoods.length === 0 && !error && (
+
+          <div className="text-center py-5">
+
+            <h5 className="fw-bold">
+              No food found
+            </h5>
+
+            <p className="text-muted">
+              Try another search or category.
+            </p>
+
+          </div>
+
+        )}
+
+      </div>
     </div>
   );
 }

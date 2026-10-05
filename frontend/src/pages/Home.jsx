@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { apiFetch } from "../api/api";
+import { useCart } from "../context/CartContext";
 
 function Home() {
   const [categories, setCategories] = useState([]);
   const [foods, setFoods] = useState([]);
   const [error, setError] = useState("");
+
+  const { addToCart } = useCart();
 
   useEffect(() => {
     loadHomeData();
@@ -46,17 +50,28 @@ function Home() {
                 easily from our food ordering system.
               </p>
 
-              <button className="btn btn-success px-4 py-2 mt-3">
+              {/* Explore Menu Button */}
+              <Link
+                to="/menu"
+                className="btn btn-success px-4 py-2 mt-3"
+              >
                 Explore Menu
-              </button>
+              </Link>
             </div>
 
             <div className="col-lg-6 text-center mt-4 mt-lg-0">
-              <div className="bg-light rounded-4 p-5">
-                <span className="display-1">🍔</span>
-                <span className="display-1">🍕</span>
-                <span className="display-1">🍜</span>
-              </div>
+
+              <img
+                src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=85"
+                alt="Delicious food"
+                className="img-fluid rounded-4 shadow-sm"
+                style={{
+                  width: "100%",
+                  height: "430px",
+                  objectFit: "cover",
+                }}
+              />
+
             </div>
 
           </div>
@@ -87,17 +102,28 @@ function Home() {
                 className="col-6 col-md-4 col-lg-3"
                 key={category.id}
               >
-                <div className="bg-white rounded-4 p-4 text-center shadow-sm">
 
-                  <h5 className="fw-bold">
-                    {category.name}
-                  </h5>
+                {/* Category Card */}
+                <Link
+                  to="/menu"
+                  className="text-decoration-none text-dark"
+                >
+                  <div
+                    className="bg-white rounded-4 p-4 text-center shadow-sm"
+                    style={{ cursor: "pointer" }}
+                  >
 
-                  <p className="text-muted small mb-0">
-                    {category.description}
-                  </p>
+                    <h5 className="fw-bold">
+                      {category.name}
+                    </h5>
 
-                </div>
+                    <p className="text-muted small mb-0">
+                      {category.description}
+                    </p>
+
+                  </div>
+                </Link>
+
               </div>
             ))}
 
@@ -147,7 +173,11 @@ function Home() {
                         Rs. {food.price}
                       </span>
 
-                      <button className="btn btn-success btn-sm">
+                      {/* Add to Cart Button */}
+                      <button
+                        className="btn btn-success btn-sm"
+                        onClick={() => addToCart(food)}
+                      >
                         Add to Cart
                       </button>
 

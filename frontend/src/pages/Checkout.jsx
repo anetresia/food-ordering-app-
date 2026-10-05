@@ -67,7 +67,6 @@ function Checkout() {
 
         customerId = customer.id;
 
-        // Customer ID save pannuvom
         localStorage.setItem(
           "customer_id",
           customer.id
@@ -127,26 +126,44 @@ function Checkout() {
   }
 
   return (
-    <div>
+    <div className="bg-white">
 
       {/* Header */}
-      <section className="bg-light py-5">
-        <div className="container">
+      <section
+        className="py-5"
+        style={{
+          background:
+            "linear-gradient(135deg, #f3f8f4 0%, #fff8f0 100%)",
+        }}
+      >
+        <div className="container py-3">
 
-          <p className="text-success fw-semibold mb-2">
-            Almost there
-          </p>
+          <div
+            className="d-inline-block px-3 py-2 rounded-pill mb-3"
+            style={{
+              backgroundColor: "#e8f5ec",
+              color: "#198754",
+            }}
+          >
+            <small className="fw-semibold">
+              Almost there
+            </small>
+          </div>
 
-          <h1 className="fw-bold">
+          <h1
+            className="fw-bold mb-2"
+            style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)" }}
+          >
             Checkout
           </h1>
 
-          <p className="text-muted mb-0">
+          <p className="text-muted fs-5 mb-0">
             Enter your details and place your order.
           </p>
 
         </div>
       </section>
+
 
       {/* Checkout */}
       <section className="py-5">
@@ -159,22 +176,36 @@ function Checkout() {
 
               <div className="card border-0 shadow-sm rounded-4">
 
-                <div className="card-body p-4">
+                <div className="card-body p-4 p-lg-5">
 
-                  <h4 className="fw-bold mb-4">
-                    Customer Details
-                  </h4>
+                  <div className="mb-4">
+
+                    <p className="text-success fw-semibold small mb-2">
+                      DELIVERY INFORMATION
+                    </p>
+
+                    <h4 className="fw-bold mb-1">
+                      Customer Details
+                    </h4>
+
+                    <p className="text-muted mb-0">
+                      Tell us where we should deliver your order.
+                    </p>
+
+                  </div>
+
 
                   {error && (
-                    <div className="alert alert-danger">
+                    <div className="alert alert-danger rounded-3">
                       {error}
                     </div>
                   )}
 
+
                   <form onSubmit={handleSubmit}>
 
                     {/* Name */}
-                    <div className="mb-3">
+                    <div className="mb-4">
 
                       <label className="form-label fw-semibold">
                         Full Name
@@ -182,7 +213,7 @@ function Checkout() {
 
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control form-control-lg rounded-3"
                         placeholder="Enter your name"
                         value={name}
                         onChange={(e) =>
@@ -193,8 +224,9 @@ function Checkout() {
 
                     </div>
 
+
                     {/* Email */}
-                    <div className="mb-3">
+                    <div className="mb-4">
 
                       <label className="form-label fw-semibold">
                         Email
@@ -202,7 +234,7 @@ function Checkout() {
 
                       <input
                         type="email"
-                        className="form-control"
+                        className="form-control form-control-lg rounded-3"
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) =>
@@ -213,8 +245,9 @@ function Checkout() {
 
                     </div>
 
+
                     {/* Phone */}
-                    <div className="mb-3">
+                    <div className="mb-4">
 
                       <label className="form-label fw-semibold">
                         Phone
@@ -222,7 +255,7 @@ function Checkout() {
 
                       <input
                         type="tel"
-                        className="form-control"
+                        className="form-control form-control-lg rounded-3"
                         placeholder="Enter your phone number"
                         value={phone}
                         onChange={(e) =>
@@ -233,6 +266,7 @@ function Checkout() {
 
                     </div>
 
+
                     {/* Address */}
                     <div className="mb-4">
 
@@ -241,7 +275,7 @@ function Checkout() {
                       </label>
 
                       <textarea
-                        className="form-control"
+                        className="form-control rounded-3"
                         rows="4"
                         placeholder="Enter your delivery address"
                         value={address}
@@ -253,9 +287,10 @@ function Checkout() {
 
                     </div>
 
+
                     <button
                       type="submit"
-                      className="btn btn-success w-100 py-2"
+                      className="btn btn-success w-100 py-3 rounded-3 fw-semibold"
                       disabled={loading}
                     >
                       {loading
@@ -271,37 +306,50 @@ function Checkout() {
 
             </div>
 
+
             {/* Order Summary */}
             <div className="col-lg-5">
 
-              <div className="card border-0 shadow-sm rounded-4">
+              <div
+                className="card border-0 shadow-sm rounded-4"
+                style={{
+                  position: "sticky",
+                  top: "20px",
+                }}
+              >
 
-                <div className="card-body p-4">
+                <div className="card-body p-4 p-lg-5">
+
+                  <p className="text-success fw-semibold small mb-2">
+                    YOUR ORDER
+                  </p>
 
                   <h4 className="fw-bold mb-4">
                     Order Summary
                   </h4>
 
+
                   {cartItems.map((item) => (
 
                     <div
                       key={item.id}
-                      className="d-flex justify-content-between mb-3"
+                      className="d-flex justify-content-between align-items-start mb-4"
                     >
 
-                      <div>
+                      <div className="pe-3">
 
                         <h6 className="fw-semibold mb-1">
                           {item.name}
                         </h6>
 
                         <small className="text-muted">
-                          {item.quantity} × Rs. {item.price}
+                          {item.quantity} × Rs.{" "}
+                          {Number(item.price).toFixed(2)}
                         </small>
 
                       </div>
 
-                      <span className="fw-semibold">
+                      <span className="fw-semibold text-nowrap">
                         Rs.{" "}
                         {(
                           Number(item.price) *
@@ -313,18 +361,50 @@ function Checkout() {
 
                   ))}
 
-                  <hr />
 
-                  <div className="d-flex justify-content-between">
+                  <hr className="my-4" />
 
-                    <span className="fw-bold">
+
+                  <div className="d-flex justify-content-between mb-3">
+
+                    <span className="text-muted">
+                      Items
+                    </span>
+
+                    <span className="fw-semibold">
+                      {cartItems.reduce(
+                        (total, item) =>
+                          total + item.quantity,
+                        0
+                      )}
+                    </span>
+
+                  </div>
+
+
+                  <div className="d-flex justify-content-between align-items-center">
+
+                    <span className="fw-bold fs-5">
                       Total
                     </span>
 
-                    <span className="fw-bold text-success fs-5">
+                    <span className="fw-bold text-success fs-4">
                       Rs. {totalAmount.toFixed(2)}
                     </span>
 
+                  </div>
+
+
+                  <div
+                    className="mt-4 p-3 rounded-3"
+                    style={{
+                      backgroundColor: "#f8faf8",
+                    }}
+                  >
+                    <small className="text-muted">
+                      Your order will be processed after you
+                      confirm your details and place the order.
+                    </small>
                   </div>
 
                 </div>

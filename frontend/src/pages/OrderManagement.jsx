@@ -113,174 +113,314 @@ function OrderManagement() {
   }
 
   return (
-    <div>
-      <section className="bg-light py-5">
-        <div className="container">
+    <div className="bg-white">
 
-          <p className="text-success fw-semibold mb-2">
-            Suvai Administration
-          </p>
+      {/* Header */}
+      <section
+        className="py-5"
+        style={{
+          background:
+            "linear-gradient(135deg, #f3f8f4 0%, #fff8f0 100%)",
+        }}
+      >
+        <div className="container py-3">
 
-          <h1 className="fw-bold">
+          <div
+            className="d-inline-block px-3 py-2 rounded-pill mb-3"
+            style={{
+              backgroundColor: "#e8f5ec",
+              color: "#198754",
+            }}
+          >
+            <small className="fw-semibold">
+              Suvai Administration
+            </small>
+          </div>
+
+          <h1
+            className="fw-bold mb-2"
+            style={{
+              fontSize: "clamp(2rem, 5vw, 3.2rem)",
+            }}
+          >
             Order Management
           </h1>
 
-          <p className="text-muted mb-0">
+          <p className="text-muted fs-5 mb-0">
             View customer orders and update order status.
           </p>
 
         </div>
       </section>
 
+
+      {/* Main Content */}
       <section className="py-5">
         <div className="container">
 
+          {/* Back Button */}
           <div className="mb-4">
             <Link
               to="/admin"
-              className="btn btn-outline-success"
+              className="btn btn-outline-success rounded-3 px-4"
             >
               ← Admin Dashboard
             </Link>
           </div>
 
+
+          {/* Messages */}
           {error && (
-            <div className="alert alert-danger">
+            <div className="alert alert-danger rounded-4">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="alert alert-success">
+            <div className="alert alert-success rounded-4">
               {success}
             </div>
           )}
 
-          {loading && (
-            <div className="text-center py-5">
-              <div className="spinner-border text-success"></div>
 
-              <p className="text-muted mt-3">
-                Loading orders...
-              </p>
+          {/* Page Heading */}
+          {!loading && orders.length > 0 && (
+            <div className="d-flex justify-content-between align-items-end mb-4">
+
+              <div>
+                <p className="text-success fw-semibold small mb-2">
+                  CUSTOMER ORDERS
+                </p>
+
+                <h3 className="fw-bold mb-1">
+                  All Orders
+                </h3>
+
+                <p className="text-muted mb-0">
+                  Manage order status and customer orders.
+                </p>
+              </div>
+
+              <span
+                className="badge rounded-pill px-3 py-2"
+                style={{
+                  backgroundColor: "#e8f5ec",
+                  color: "#198754",
+                }}
+              >
+                {orders.length} orders
+              </span>
+
             </div>
           )}
 
+
+          {/* Loading */}
+          {loading && (
+            <div
+              className="text-center py-5 rounded-4"
+              style={{
+                backgroundColor: "#f8faf8",
+              }}
+            >
+
+              <div className="spinner-border text-success"></div>
+
+              <p className="text-muted mt-3 mb-0">
+                Loading orders...
+              </p>
+
+            </div>
+          )}
+
+
+          {/* Orders Table */}
           {!loading &&
             orders.length > 0 && (
-              <div className="table-responsive">
 
-                <table className="table table-hover align-middle">
+              <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
 
-                  <thead className="table-light">
+                <div className="table-responsive">
 
-                    <tr>
-                      <th>Order</th>
-                      <th>Customer</th>
-                      <th>Date</th>
-                      <th>Total</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
+                  <table className="table table-hover align-middle mb-0">
 
-                  </thead>
+                    <thead
+                      style={{
+                        backgroundColor: "#f8faf8",
+                      }}
+                    >
 
-                  <tbody>
+                      <tr>
+                        <th className="px-4 py-3">
+                          Order
+                        </th>
 
-                    {orders.map((order) => (
-                      <tr key={order.id}>
+                        <th className="py-3">
+                          Customer
+                        </th>
 
-                        <td className="fw-bold">
-                          #{order.id}
-                        </td>
+                        <th className="py-3">
+                          Date
+                        </th>
 
-                        <td>
-                          Customer #{order.customer_id}
-                        </td>
+                        <th className="py-3">
+                          Total
+                        </th>
 
-                        <td>
-                          {order.created_at
-                            ? new Date(
-                                order.created_at
-                              ).toLocaleString()
-                            : "-"}
-                        </td>
+                        <th className="py-3">
+                          Status
+                        </th>
 
-                        <td className="fw-semibold text-success">
-                          Rs.{" "}
-                          {Number(
-                            order.total_amount
-                          ).toFixed(2)}
-                        </td>
-
-                        <td>
-                          <select
-                            className="form-select"
-                            value={order.status}
-                            onChange={(e) =>
-                              updateStatus(
-                                order.id,
-                                e.target.value
-                              )
-                            }
-                            disabled={
-                              updatingId ===
-                              order.id
-                            }
-                          >
-                            {statuses.map(
-                              (status) => (
-                                <option
-                                  key={status}
-                                  value={status}
-                                >
-                                  {status}
-                                </option>
-                              )
-                            )}
-                          </select>
-                        </td>
-
-                        <td>
-                          <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() =>
-                              deleteOrder(
-                                order.id
-                              )
-                            }
-                          >
-                            Delete
-                          </button>
-                        </td>
-
+                        <th className="py-3 pe-4">
+                          Action
+                        </th>
                       </tr>
-                    ))}
 
-                  </tbody>
+                    </thead>
 
-                </table>
 
-              </div>
-            )}
+                    <tbody>
 
-          {!loading &&
-            orders.length === 0 && (
-              <div className="text-center py-5">
+                      {orders.map((order) => (
 
-                <div className="display-3">
-                  📦
+                        <tr key={order.id}>
+
+                          <td className="px-4">
+
+                            <span className="fw-bold">
+                              #{order.id}
+                            </span>
+
+                          </td>
+
+
+                          <td>
+
+                            <span className="text-muted">
+                              Customer #{order.customer_id}
+                            </span>
+
+                          </td>
+
+
+                          <td>
+
+                            <small className="text-muted">
+                              {order.created_at
+                                ? new Date(
+                                    order.created_at
+                                  ).toLocaleString()
+                                : "-"}
+                            </small>
+
+                          </td>
+
+
+                          <td>
+
+                            <span className="fw-bold text-success">
+                              Rs.{" "}
+                              {Number(
+                                order.total_amount
+                              ).toFixed(2)}
+                            </span>
+
+                          </td>
+
+
+                          <td>
+
+                            <select
+                              className="form-select rounded-3"
+                              style={{
+                                minWidth: "160px",
+                              }}
+                              value={order.status}
+                              onChange={(e) =>
+                                updateStatus(
+                                  order.id,
+                                  e.target.value
+                                )
+                              }
+                              disabled={
+                                updatingId ===
+                                order.id
+                              }
+                            >
+
+                              {statuses.map(
+                                (status) => (
+                                  <option
+                                    key={status}
+                                    value={status}
+                                  >
+                                    {status}
+                                  </option>
+                                )
+                              )}
+
+                            </select>
+
+                          </td>
+
+
+                          <td className="pe-4">
+
+                            <button
+                              className="btn btn-sm btn-outline-danger rounded-3"
+                              onClick={() =>
+                                deleteOrder(
+                                  order.id
+                                )
+                              }
+                            >
+                              Delete
+                            </button>
+
+                          </td>
+
+                        </tr>
+
+                      ))}
+
+                    </tbody>
+
+                  </table>
+
                 </div>
 
-                <h4 className="fw-bold mt-3">
+              </div>
+
+            )}
+
+
+          {/* Empty State */}
+          {!loading &&
+            orders.length === 0 && (
+
+              <div
+                className="text-center py-5 rounded-4"
+                style={{
+                  backgroundColor: "#fafafa",
+                  border: "1px solid #eeeeee",
+                }}
+              >
+
+                <h4 className="fw-bold mt-2">
                   No orders found
                 </h4>
 
+                <p className="text-muted mb-0">
+                  Customer orders will appear here.
+                </p>
+
               </div>
+
             )}
 
         </div>
       </section>
+
     </div>
   );
 }

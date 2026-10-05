@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
@@ -25,11 +26,13 @@ function App() {
 
       <CartProvider>
 
+        {/* Navbar */}
         <Navbar />
 
+        {/* All Pages */}
         <Routes>
 
-          {/* Customer */}
+          {/* ================= CUSTOMER ================= */}
 
           <Route
             path="/"
@@ -71,7 +74,8 @@ function App() {
             element={<MyOrders />}
           />
 
-          {/* Admin */}
+
+          {/* ================= ADMIN ================= */}
 
           <Route
             path="/admin"
@@ -99,6 +103,10 @@ function App() {
           />
 
         </Routes>
+
+
+        {/* Footer */}
+        <Footer />
 
       </CartProvider>
 

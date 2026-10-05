@@ -42,91 +42,138 @@ function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="container py-5 text-center">
-        <div className="spinner-border text-success"></div>
+      <div className="container py-5">
+        <div
+          className="text-center py-5 rounded-4"
+          style={{
+            backgroundColor: "#f8faf8",
+          }}
+        >
+          <div className="spinner-border text-success"></div>
 
-        <p className="text-muted mt-3">
-          Loading dashboard...
-        </p>
+          <p className="text-muted mt-3 mb-0">
+            Loading dashboard...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="bg-white">
 
-      <section className="bg-light py-5">
-        <div className="container">
+      {/* Header */}
+      <section
+        className="py-5"
+        style={{
+          background:
+            "linear-gradient(135deg, #f3f8f4 0%, #fff8f0 100%)",
+        }}
+      >
+        <div className="container py-3">
 
-          <p className="text-success fw-semibold mb-2">
-            Suvai Administration
-          </p>
+          <div
+            className="d-inline-block px-3 py-2 rounded-pill mb-3"
+            style={{
+              backgroundColor: "#e8f5ec",
+              color: "#198754",
+            }}
+          >
+            <small className="fw-semibold">
+              Suvai Administration
+            </small>
+          </div>
 
-          <h1 className="fw-bold">
+          <h1
+            className="fw-bold mb-2"
+            style={{
+              fontSize: "clamp(2rem, 5vw, 3.2rem)",
+            }}
+          >
             Admin Dashboard
           </h1>
 
-          <p className="text-muted">
+          <p className="text-muted fs-5 mb-0">
             Manage your food ordering system.
           </p>
 
         </div>
       </section>
 
+
+      {/* Error */}
       {error && (
         <div className="container py-4">
-
-          <div className="alert alert-danger">
+          <div className="alert alert-danger rounded-4">
             {error}
           </div>
-
         </div>
       )}
+
 
       {dashboard && (
         <section className="py-5">
 
           <div className="container">
 
-            {/* Admin navigation */}
-
+            {/* Admin Navigation */}
             <div className="card border-0 shadow-sm rounded-4 mb-5">
 
-              <div className="card-body p-4">
+              <div className="card-body p-4 p-lg-5">
 
-                <h4 className="fw-bold mb-3">
-                  Management
-                </h4>
+                <div className="mb-4">
 
-                <div className="d-flex flex-wrap gap-2">
+                  <p className="text-success fw-semibold small mb-2">
+                    MANAGEMENT
+                  </p>
 
-                  <Link
-                    to="/admin/foods"
-                    className="btn btn-success"
-                  >
-                    🍽️ Manage Foods
-                  </Link>
+                  <h4 className="fw-bold mb-1">
+                    Manage Your System
+                  </h4>
 
-                  <Link
-                    to="/admin/categories"
-                    className="btn btn-success"
-                  >
-                    📂 Manage Categories
-                  </Link>
+                  <p className="text-muted mb-0">
+                    Access and manage the main sections of Suvai.
+                  </p>
 
-                  <Link
-                    to="/admin/orders"
-                    className="btn btn-success"
-                  >
-                    📦 Manage Orders
-                  </Link>
+                </div>
 
-                  <Link
-                    to="/admin/reports"
-                    className="btn btn-success"
-                  >
-                    📊 Reports
-                  </Link>
+                <div className="row g-3">
+
+                  <div className="col-md-6 col-lg-3">
+                    <Link
+                      to="/admin/foods"
+                      className="btn btn-success w-100 py-3 rounded-3 fw-semibold"
+                    >
+                      Manage Foods
+                    </Link>
+                  </div>
+
+                  <div className="col-md-6 col-lg-3">
+                    <Link
+                      to="/admin/categories"
+                      className="btn btn-success w-100 py-3 rounded-3 fw-semibold"
+                    >
+                      Manage Categories
+                    </Link>
+                  </div>
+
+                  <div className="col-md-6 col-lg-3">
+                    <Link
+                      to="/admin/orders"
+                      className="btn btn-success w-100 py-3 rounded-3 fw-semibold"
+                    >
+                      Manage Orders
+                    </Link>
+                  </div>
+
+                  <div className="col-md-6 col-lg-3">
+                    <Link
+                      to="/admin/reports"
+                      className="btn btn-outline-success w-100 py-3 rounded-3 fw-semibold"
+                    >
+                      View Reports
+                    </Link>
+                  </div>
 
                 </div>
 
@@ -134,75 +181,97 @@ function AdminDashboard() {
 
             </div>
 
-            {/* Dashboard Cards */}
+
+            {/* Dashboard Statistics */}
+            <div className="mb-4">
+
+              <p className="text-success fw-semibold small mb-2">
+                OVERVIEW
+              </p>
+
+              <h3 className="fw-bold mb-1">
+                Business Overview
+              </h3>
+
+              <p className="text-muted">
+                A quick summary of your food ordering system.
+              </p>
+
+            </div>
+
 
             <div className="row g-4">
 
+              {/* Total Foods */}
               <div className="col-md-6 col-lg-3">
 
                 <div className="card border-0 shadow-sm rounded-4 h-100">
 
                   <div className="card-body p-4">
 
-                    <div className="fs-2">
-                      🍽️
-                    </div>
-
-                    <p className="text-muted mb-1">
+                    <p className="text-muted mb-2">
                       Total Foods
                     </p>
 
-                    <h2 className="fw-bold">
+                    <h2 className="fw-bold mb-0">
                       {dashboard.total_foods}
                     </h2>
 
+                    <small className="text-success">
+                      Food items
+                    </small>
+
                   </div>
 
                 </div>
 
               </div>
 
+
+              {/* Categories */}
               <div className="col-md-6 col-lg-3">
 
                 <div className="card border-0 shadow-sm rounded-4 h-100">
 
                   <div className="card-body p-4">
 
-                    <div className="fs-2">
-                      📂
-                    </div>
-
-                    <p className="text-muted mb-1">
+                    <p className="text-muted mb-2">
                       Categories
                     </p>
 
-                    <h2 className="fw-bold">
+                    <h2 className="fw-bold mb-0">
                       {dashboard.total_categories}
                     </h2>
 
+                    <small className="text-success">
+                      Food categories
+                    </small>
+
                   </div>
 
                 </div>
 
               </div>
 
+
+              {/* Customers */}
               <div className="col-md-6 col-lg-3">
 
                 <div className="card border-0 shadow-sm rounded-4 h-100">
 
                   <div className="card-body p-4">
 
-                    <div className="fs-2">
-                      👥
-                    </div>
-
-                    <p className="text-muted mb-1">
+                    <p className="text-muted mb-2">
                       Customers
                     </p>
 
-                    <h2 className="fw-bold">
+                    <h2 className="fw-bold mb-0">
                       {dashboard.total_customers}
                     </h2>
+
+                    <small className="text-success">
+                      Registered customers
+                    </small>
 
                   </div>
 
@@ -210,23 +279,25 @@ function AdminDashboard() {
 
               </div>
 
+
+              {/* Orders */}
               <div className="col-md-6 col-lg-3">
 
                 <div className="card border-0 shadow-sm rounded-4 h-100">
 
                   <div className="card-body p-4">
 
-                    <div className="fs-2">
-                      📦
-                    </div>
-
-                    <p className="text-muted mb-1">
+                    <p className="text-muted mb-2">
                       Orders
                     </p>
 
-                    <h2 className="fw-bold">
+                    <h2 className="fw-bold mb-0">
                       {dashboard.total_orders}
                     </h2>
+
+                    <small className="text-success">
+                      Total orders
+                    </small>
 
                   </div>
 
@@ -234,42 +305,54 @@ function AdminDashboard() {
 
               </div>
 
+
+              {/* Revenue */}
               <div className="col-md-6 col-lg-4">
 
-                <div className="card border-0 shadow-sm rounded-4">
+                <div className="card border-0 shadow-sm rounded-4 h-100">
 
                   <div className="card-body p-4">
 
-                    <p className="text-muted">
+                    <p className="text-muted mb-2">
                       Total Revenue
                     </p>
 
-                    <h3 className="fw-bold text-success">
+                    <h3 className="fw-bold text-success mb-1">
                       Rs.{" "}
                       {Number(
                         dashboard.total_revenue
                       ).toFixed(2)}
                     </h3>
 
+                    <small className="text-muted">
+                      Overall sales revenue
+                    </small>
+
                   </div>
 
                 </div>
 
               </div>
 
+
+              {/* Pending Orders */}
               <div className="col-md-6 col-lg-4">
 
-                <div className="card border-0 shadow-sm rounded-4">
+                <div className="card border-0 shadow-sm rounded-4 h-100">
 
                   <div className="card-body p-4">
 
-                    <p className="text-muted">
+                    <p className="text-muted mb-2">
                       Pending Orders
                     </p>
 
-                    <h3 className="fw-bold">
+                    <h3 className="fw-bold mb-1">
                       {dashboard.pending_orders}
                     </h3>
+
+                    <small className="text-muted">
+                      Orders waiting for processing
+                    </small>
 
                   </div>
 
@@ -277,19 +360,25 @@ function AdminDashboard() {
 
               </div>
 
+
+              {/* Delivered Orders */}
               <div className="col-md-6 col-lg-4">
 
-                <div className="card border-0 shadow-sm rounded-4">
+                <div className="card border-0 shadow-sm rounded-4 h-100">
 
                   <div className="card-body p-4">
 
-                    <p className="text-muted">
+                    <p className="text-muted mb-2">
                       Delivered Orders
                     </p>
 
-                    <h3 className="fw-bold">
+                    <h3 className="fw-bold text-success mb-1">
                       {dashboard.delivered_orders}
                     </h3>
+
+                    <small className="text-muted">
+                      Successfully delivered orders
+                    </small>
 
                   </div>
 

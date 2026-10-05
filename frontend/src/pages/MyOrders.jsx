@@ -66,21 +66,41 @@ function MyOrders() {
   }
 
   return (
-    <div>
+    <div className="bg-white">
 
-      <section className="bg-light py-5">
+      {/* Header */}
+      <section
+        className="py-5"
+        style={{
+          background:
+            "linear-gradient(135deg, #f3f8f4 0%, #fff8f0 100%)",
+        }}
+      >
 
-        <div className="container">
+        <div className="container py-3">
 
-          <p className="text-success fw-semibold mb-2">
-            Your orders
-          </p>
+          <div
+            className="d-inline-block px-3 py-2 rounded-pill mb-3"
+            style={{
+              backgroundColor: "#e8f5ec",
+              color: "#198754",
+            }}
+          >
+            <small className="fw-semibold">
+              Your orders
+            </small>
+          </div>
 
-          <h1 className="fw-bold">
+          <h1
+            className="fw-bold mb-2"
+            style={{
+              fontSize: "clamp(2rem, 5vw, 3.2rem)",
+            }}
+          >
             My Orders
           </h1>
 
-          <p className="text-muted mb-0">
+          <p className="text-muted fs-5 mb-0">
             View your previous food orders.
           </p>
 
@@ -88,17 +108,25 @@ function MyOrders() {
 
       </section>
 
+
+      {/* Orders */}
       <section className="py-5">
 
         <div className="container">
 
+          {/* Loading */}
           {loading && (
 
-            <div className="text-center py-5">
+            <div
+              className="text-center py-5 rounded-4"
+              style={{
+                backgroundColor: "#f8faf8",
+              }}
+            >
 
               <div className="spinner-border text-success"></div>
 
-              <p className="text-muted mt-3">
+              <p className="text-muted mt-3 mb-0">
                 Loading your orders...
               </p>
 
@@ -106,30 +134,59 @@ function MyOrders() {
 
           )}
 
+
+          {/* Error */}
           {error && (
 
-            <div className="alert alert-danger">
+            <div className="alert alert-danger rounded-4">
               {error}
             </div>
 
           )}
 
+
+          {/* No Orders */}
           {!loading &&
             !error &&
             orders.length === 0 && (
 
-              <div className="text-center py-5">
+              <div
+                className="text-center py-5 px-3 rounded-4"
+                style={{
+                  backgroundColor: "#fafafa",
+                  border: "1px solid #eeeeee",
+                }}
+              >
 
-                <div className="display-3">
-                  📦
+                <div
+                  className="mx-auto mb-4 d-flex align-items-center justify-content-center rounded-circle"
+                  style={{
+                    width: "85px",
+                    height: "85px",
+                    backgroundColor: "#e8f5ec",
+                  }}
+                >
+                  <span
+                    className="fw-bold"
+                    style={{
+                      color: "#198754",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    Orders
+                  </span>
                 </div>
 
-                <h4 className="fw-bold mt-3">
+                <h4 className="fw-bold mb-2">
                   No orders yet
                 </h4>
 
+                <p className="text-muted mb-4">
+                  Your previous orders will appear here.
+                </p>
+
                 <button
-                  className="btn btn-success mt-2"
+                  className="btn btn-success px-4 py-2 rounded-3"
                   onClick={() =>
                     navigate("/menu")
                   }
@@ -141,6 +198,8 @@ function MyOrders() {
 
             )}
 
+
+          {/* Orders List */}
           {!loading &&
             orders.length > 0 && (
 
@@ -154,39 +213,61 @@ function MyOrders() {
                       key={order.id}
                     >
 
-                      <div className="card h-100 border-0 shadow-sm rounded-4">
+                      <div
+                        className="card h-100 border-0 shadow-sm rounded-4"
+                        style={{
+                          transition:
+                            "transform 0.2s ease",
+                        }}
+                      >
 
                         <div className="card-body p-4">
 
-                          <div className="d-flex justify-content-between align-items-start">
+                          {/* Order Header */}
+                          <div className="d-flex justify-content-between align-items-start gap-2">
 
-                            <h5 className="fw-bold">
-                              Order #{order.id}
-                            </h5>
+                            <div>
 
-                            <span className="badge bg-warning text-dark">
+                              <p className="text-success small fw-semibold mb-1">
+                                ORDER
+                              </p>
+
+                              <h5 className="fw-bold mb-0">
+                                #{order.id}
+                              </h5>
+
+                            </div>
+
+                            <span className="badge bg-warning text-dark rounded-pill px-3 py-2">
                               {order.status}
                             </span>
 
                           </div>
 
-                          <p className="text-muted small mt-2">
+
+                          {/* Date */}
+                          <p className="text-muted small mt-3 mb-0">
+
                             {order.created_at
                               ? new Date(
                                   order.created_at
                                 ).toLocaleString()
                               : ""}
+
                           </p>
 
-                          <hr />
 
-                          <div className="d-flex justify-content-between">
+                          <hr className="my-4" />
 
-                            <span className="fw-semibold">
-                              Total
+
+                          {/* Total */}
+                          <div className="d-flex justify-content-between align-items-center">
+
+                            <span className="text-muted">
+                              Total Amount
                             </span>
 
-                            <span className="fw-bold text-success">
+                            <span className="fw-bold text-success fs-5">
                               Rs.{" "}
                               {Number(
                                 order.total_amount
@@ -195,8 +276,10 @@ function MyOrders() {
 
                           </div>
 
+
+                          {/* Order Again */}
                           <button
-                            className="btn btn-outline-success w-100 mt-4"
+                            className="btn btn-outline-success w-100 mt-4 py-2 rounded-3 fw-semibold"
                             onClick={
                               handleOrderAgain
                             }

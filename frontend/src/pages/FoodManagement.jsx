@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { apiFetch } from "../api/api";
 
 function FoodManagement() {
-
   const [foods, setFoods] = useState([]);
 
   const [categories, setCategories] = useState([]);
@@ -33,77 +32,47 @@ function FoodManagement() {
 
   async function getFoods() {
     try {
-
       setLoading(true);
-
       setError("");
 
       const data = await apiFetch("/foods/");
 
       setFoods(data);
-
     } catch (error) {
-
       setError(error.message);
-
     } finally {
-
       setLoading(false);
-
     }
   }
 
   async function getCategories() {
-
     try {
-
       const data = await apiFetch("/categories/");
 
       setCategories(data);
-
     } catch (error) {
-
       setError(error.message);
-
     }
   }
 
   function clearForm() {
-
     setName("");
     setDescription("");
     setPrice("");
     setImage("");
     setIsAvailable(true);
     setCategoryId("");
-
     setEditingId(null);
-
   }
 
   function startEdit(food) {
-
     setEditingId(food.id);
-
     setName(food.name);
-
-    setDescription(
-      food.description || ""
-    );
-
+    setDescription(food.description || "");
     setPrice(food.price);
-
-    setImage(
-      food.image || ""
-    );
-
-    setIsAvailable(
-      food.is_available
-    );
-
-    setCategoryId(
-      food.category_id
-    );
+    setImage(food.image || "");
+    setIsAvailable(food.is_available);
+    setCategoryId(food.category_id);
 
     setError("");
     setSuccess("");
@@ -112,255 +81,206 @@ function FoodManagement() {
       top: 0,
       behavior: "smooth",
     });
-
   }
 
   async function handleSubmit(event) {
-
     event.preventDefault();
 
     try {
-
       setSaving(true);
-
       setError("");
       setSuccess("");
 
-      const token =
-        localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       if (!token) {
-
-        setError(
-          "Please login as admin."
-        );
-
+        setError("Please login as admin.");
         return;
       }
 
       const foodData = {
-
         name,
-
         description,
-
         price: Number(price),
-
-        image:
-          image || null,
-
-        is_available:
-          isAvailable,
-
-        category_id:
-          Number(categoryId),
-
+        image: image || null,
+        is_available: isAvailable,
+        category_id: Number(categoryId),
       };
 
       if (editingId) {
+        await apiFetch(`/foods/${editingId}`, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(foodData),
+        });
 
-        await apiFetch(
-          `/foods/${editingId}`,
-          {
-            method: "PUT",
-
-            headers: {
-              Authorization:
-                `Bearer ${token}`,
-            },
-
-            body:
-              JSON.stringify(
-                foodData
-              ),
-          }
-        );
-
-        setSuccess(
-          "Food updated successfully."
-        );
-
+        setSuccess("Food updated successfully.");
       } else {
+        await apiFetch("/foods/", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(foodData),
+        });
 
-        await apiFetch(
-          "/foods/",
-          {
-            method: "POST",
-
-            headers: {
-              Authorization:
-                `Bearer ${token}`,
-            },
-
-            body:
-              JSON.stringify(
-                foodData
-              ),
-          }
-        );
-
-        setSuccess(
-          "Food added successfully."
-        );
+        setSuccess("Food added successfully.");
       }
 
       clearForm();
 
       await getFoods();
-
     } catch (error) {
-
-      setError(
-        error.message
-      );
-
+      setError(error.message);
     } finally {
-
       setSaving(false);
-
     }
   }
 
   async function deleteFood(foodId) {
-
-    const confirmed =
-      window.confirm(
-        "Are you sure you want to delete this food?"
-      );
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this food?"
+    );
 
     if (!confirmed) {
       return;
     }
 
     try {
-
       setError("");
       setSuccess("");
 
-      const token =
-        localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       if (!token) {
-
-        setError(
-          "Please login as admin."
-        );
-
+        setError("Please login as admin.");
         return;
       }
 
-      await apiFetch(
-        `/foods/${foodId}`,
-        {
-          method: "DELETE",
+      await apiFetch(`/foods/${foodId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-          headers: {
-            Authorization:
-              `Bearer ${token}`,
-          },
-        }
-      );
-
-      setSuccess(
-        "Food deleted successfully."
-      );
+      setSuccess("Food deleted successfully.");
 
       if (editingId === foodId) {
         clearForm();
       }
 
       await getFoods();
-
     } catch (error) {
-
-      setError(
-        error.message
-      );
-
+      setError(error.message);
     }
   }
 
-  const filteredFoods =
-    foods.filter((food) =>
-      food.name
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
-    );
+  const filteredFoods = foods.filter((food) =>
+    food.name
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
 
   return (
-    <div>
+    <div className="bg-white">
 
       {/* Header */}
+      <section
+        className="py-5"
+        style={{
+          background:
+            "linear-gradient(135deg, #f3f8f4 0%, #fff8f0 100%)",
+        }}
+      >
+        <div className="container py-3">
 
-      <section className="bg-light py-5">
+          <div
+            className="d-inline-block px-3 py-2 rounded-pill mb-3"
+            style={{
+              backgroundColor: "#e8f5ec",
+              color: "#198754",
+            }}
+          >
+            <small className="fw-semibold">
+              Suvai Administration
+            </small>
+          </div>
 
-        <div className="container">
-
-          <p className="text-success fw-semibold mb-2">
-            Suvai Administration
-          </p>
-
-          <h1 className="fw-bold">
+          <h1
+            className="fw-bold mb-2"
+            style={{
+              fontSize: "clamp(2rem, 5vw, 3.2rem)",
+            }}
+          >
             Food Management
           </h1>
 
-          <p className="text-muted mb-0">
+          <p className="text-muted fs-5 mb-0">
             Add, update and manage food items.
           </p>
 
         </div>
-
       </section>
 
-      <section className="py-5">
 
+      <section className="py-5">
         <div className="container">
 
+          {/* Back Button */}
           <div className="mb-4">
-
             <Link
               to="/admin"
-              className="btn btn-outline-success"
+              className="btn btn-outline-success rounded-3 px-4"
             >
               ← Admin Dashboard
             </Link>
-
           </div>
 
-          {/* Messages */}
 
+          {/* Messages */}
           {error && (
-            <div className="alert alert-danger">
+            <div className="alert alert-danger rounded-4">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="alert alert-success">
+            <div className="alert alert-success rounded-4">
               {success}
             </div>
           )}
 
-          {/* Form */}
 
+          {/* Food Form */}
           <div className="card border-0 shadow-sm rounded-4 mb-5">
 
-            <div className="card-body p-4">
+            <div className="card-body p-4 p-lg-5">
 
-              <div className="d-flex justify-content-between align-items-center mb-4">
+              <div className="d-flex justify-content-between align-items-start mb-4">
 
-                <h4 className="fw-bold mb-0">
-                  {editingId
-                    ? "Update Food"
-                    : "Add New Food"}
-                </h4>
+                <div>
+                  <p className="text-success fw-semibold small mb-2">
+                    FOOD DETAILS
+                  </p>
+
+                  <h4 className="fw-bold mb-1">
+                    {editingId
+                      ? "Update Food"
+                      : "Add New Food"}
+                  </h4>
+
+                  <p className="text-muted mb-0">
+                    Enter the details of your food item.
+                  </p>
+                </div>
 
                 {editingId && (
                   <button
                     type="button"
-                    className="btn btn-outline-secondary"
+                    className="btn btn-outline-secondary rounded-3"
                     onClick={clearForm}
                   >
                     Cancel
@@ -369,12 +289,12 @@ function FoodManagement() {
 
               </div>
 
-              <form
-                onSubmit={handleSubmit}
-              >
 
-                <div className="row g-3">
+              <form onSubmit={handleSubmit}>
 
+                <div className="row g-4">
+
+                  {/* Food Name */}
                   <div className="col-md-6">
 
                     <label className="form-label fw-semibold">
@@ -383,12 +303,10 @@ function FoodManagement() {
 
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control form-control-lg rounded-3"
                       value={name}
                       onChange={(e) =>
-                        setName(
-                          e.target.value
-                        )
+                        setName(e.target.value)
                       }
                       placeholder="Enter food name"
                       required
@@ -396,6 +314,8 @@ function FoodManagement() {
 
                   </div>
 
+
+                  {/* Price */}
                   <div className="col-md-6">
 
                     <label className="form-label fw-semibold">
@@ -404,12 +324,10 @@ function FoodManagement() {
 
                     <input
                       type="number"
-                      className="form-control"
+                      className="form-control form-control-lg rounded-3"
                       value={price}
                       onChange={(e) =>
-                        setPrice(
-                          e.target.value
-                        )
+                        setPrice(e.target.value)
                       }
                       placeholder="Enter price"
                       min="0.01"
@@ -419,6 +337,8 @@ function FoodManagement() {
 
                   </div>
 
+
+                  {/* Description */}
                   <div className="col-12">
 
                     <label className="form-label fw-semibold">
@@ -426,19 +346,19 @@ function FoodManagement() {
                     </label>
 
                     <textarea
-                      className="form-control"
+                      className="form-control rounded-3"
                       rows="3"
                       value={description}
                       onChange={(e) =>
-                        setDescription(
-                          e.target.value
-                        )
+                        setDescription(e.target.value)
                       }
                       placeholder="Enter description"
                     ></textarea>
 
                   </div>
 
+
+                  {/* Image URL */}
                   <div className="col-md-6">
 
                     <label className="form-label fw-semibold">
@@ -447,18 +367,22 @@ function FoodManagement() {
 
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control form-control-lg rounded-3"
                       value={image}
                       onChange={(e) =>
-                        setImage(
-                          e.target.value
-                        )
+                        setImage(e.target.value)
                       }
                       placeholder="Enter image URL"
                     />
 
+                    <small className="text-muted">
+                      Add a direct URL for the food image.
+                    </small>
+
                   </div>
 
+
+                  {/* Category */}
                   <div className="col-md-6">
 
                     <label className="form-label fw-semibold">
@@ -466,12 +390,10 @@ function FoodManagement() {
                     </label>
 
                     <select
-                      className="form-select"
+                      className="form-select form-select-lg rounded-3"
                       value={categoryId}
                       onChange={(e) =>
-                        setCategoryId(
-                          e.target.value
-                        )
+                        setCategoryId(e.target.value)
                       }
                       required
                     >
@@ -483,12 +405,8 @@ function FoodManagement() {
                       {categories.map(
                         (category) => (
                           <option
-                            key={
-                              category.id
-                            }
-                            value={
-                              category.id
-                            }
+                            key={category.id}
+                            value={category.id}
                           >
                             {category.name}
                           </option>
@@ -499,40 +417,51 @@ function FoodManagement() {
 
                   </div>
 
+
+                  {/* Availability */}
                   <div className="col-12">
 
-                    <div className="form-check">
+                    <div
+                      className="p-3 rounded-3"
+                      style={{
+                        backgroundColor: "#f8faf8",
+                      }}
+                    >
 
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="available"
-                        checked={
-                          isAvailable
-                        }
-                        onChange={(e) =>
-                          setIsAvailable(
-                            e.target.checked
-                          )
-                        }
-                      />
+                      <div className="form-check">
 
-                      <label
-                        className="form-check-label"
-                        htmlFor="available"
-                      >
-                        Food is available
-                      </label>
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="available"
+                          checked={isAvailable}
+                          onChange={(e) =>
+                            setIsAvailable(
+                              e.target.checked
+                            )
+                          }
+                        />
+
+                        <label
+                          className="form-check-label fw-semibold"
+                          htmlFor="available"
+                        >
+                          Food is available
+                        </label>
+
+                      </div>
 
                     </div>
 
                   </div>
 
+
+                  {/* Submit */}
                   <div className="col-12">
 
                     <button
                       type="submit"
-                      className="btn btn-success px-4"
+                      className="btn btn-success px-4 py-2 rounded-3 fw-semibold"
                       disabled={saving}
                     >
                       {saving
@@ -552,48 +481,73 @@ function FoodManagement() {
 
           </div>
 
-          {/* Food List */}
 
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          {/* Food List Header */}
+          <div className="d-flex justify-content-between align-items-end mb-3">
 
-            <h3 className="fw-bold">
-              Food Items
-            </h3>
+            <div>
+              <p className="text-success fw-semibold small mb-2">
+                MENU ITEMS
+              </p>
 
-            <span className="text-muted">
+              <h3 className="fw-bold mb-1">
+                Food Items
+              </h3>
+
+              <p className="text-muted mb-0">
+                Manage your available food items.
+              </p>
+            </div>
+
+            <span
+              className="badge rounded-pill px-3 py-2"
+              style={{
+                backgroundColor: "#e8f5ec",
+                color: "#198754",
+              }}
+            >
               {filteredFoods.length} item(s)
             </span>
 
           </div>
 
+
+          {/* Search */}
           <div className="mb-4">
 
             <input
               type="text"
-              className="form-control"
+              className="form-control form-control-lg rounded-3"
               placeholder="Search food..."
               value={search}
               onChange={(e) =>
-                setSearch(
-                  e.target.value
-                )
+                setSearch(e.target.value)
               }
             />
 
           </div>
 
+
+          {/* Loading */}
           {loading && (
-            <div className="text-center py-5">
+            <div
+              className="text-center py-5 rounded-4"
+              style={{
+                backgroundColor: "#f8faf8",
+              }}
+            >
 
               <div className="spinner-border text-success"></div>
 
-              <p className="text-muted mt-3">
+              <p className="text-muted mt-3 mb-0">
                 Loading foods...
               </p>
 
             </div>
           )}
 
+
+          {/* Food Cards */}
           {!loading &&
             filteredFoods.length > 0 && (
 
@@ -603,10 +557,8 @@ function FoodManagement() {
                   (food) => {
 
                     const available =
-                      food.is_available ===
-                        true ||
-                      food.is_available ===
-                        1;
+                      food.is_available === true ||
+                      food.is_available === 1;
 
                     const category =
                       categories.find(
@@ -623,55 +575,50 @@ function FoodManagement() {
 
                         <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
 
+                          {/* Image */}
                           {food.image ? (
 
                             <img
-                              src={
-                                food.image
-                              }
-                              alt={
-                                food.name
-                              }
+                              src={food.image}
+                              alt={food.name}
                               className="card-img-top"
                               style={{
-                                height:
-                                  "200px",
-                                objectFit:
-                                  "cover",
+                                height: "220px",
+                                objectFit: "cover",
                               }}
                             />
 
                           ) : (
 
                             <div
-                              className="bg-light d-flex justify-content-center align-items-center"
+                              className="d-flex justify-content-center align-items-center"
                               style={{
-                                height:
-                                  "200px",
+                                height: "220px",
+                                background:
+                                  "linear-gradient(135deg, #f3f8f4, #fff8f0)",
                               }}
                             >
-
-                              <span className="display-3">
-                                🍽️
+                              <span className="text-muted fw-semibold">
+                                No image
                               </span>
-
                             </div>
 
                           )}
 
-                          <div className="card-body">
 
-                            <div className="d-flex justify-content-between align-items-start">
+                          <div className="card-body p-4">
 
-                              <h5 className="fw-bold">
+                            <div className="d-flex justify-content-between align-items-start gap-2">
+
+                              <h5 className="fw-bold mb-2">
                                 {food.name}
                               </h5>
 
                               <span
                                 className={
                                   available
-                                    ? "badge bg-success"
-                                    : "badge bg-secondary"
+                                    ? "badge bg-success rounded-pill"
+                                    : "badge bg-secondary rounded-pill"
                                 }
                               >
                                 {available
@@ -681,39 +628,41 @@ function FoodManagement() {
 
                             </div>
 
-                            <p className="text-muted small">
+
+                            <p className="text-success small fw-semibold mb-2">
                               {category
                                 ? category.name
                                 : "No category"}
                             </p>
 
-                            <p className="text-muted">
+
+                            <p className="text-muted mb-3">
                               {food.description ||
                                 "No description"}
                             </p>
 
-                            <h5 className="text-success fw-bold">
+
+                            <h5 className="text-success fw-bold mb-0">
                               Rs.{" "}
                               {Number(
                                 food.price
                               ).toFixed(2)}
                             </h5>
 
-                            <div className="d-flex gap-2 mt-3">
+
+                            <div className="d-flex gap-2 mt-4">
 
                               <button
-                                className="btn btn-outline-success w-50"
+                                className="btn btn-outline-success w-50 rounded-3"
                                 onClick={() =>
-                                  startEdit(
-                                    food
-                                  )
+                                  startEdit(food)
                                 }
                               >
                                 Edit
                               </button>
 
                               <button
-                                className="btn btn-outline-danger w-50"
+                                className="btn btn-outline-danger w-50 rounded-3"
                                 onClick={() =>
                                   deleteFood(
                                     food.id
@@ -737,24 +686,31 @@ function FoodManagement() {
               </div>
             )}
 
+
+          {/* No Foods */}
           {!loading &&
             filteredFoods.length === 0 && (
 
-              <div className="text-center py-5">
+              <div
+                className="text-center py-5 rounded-4"
+                style={{
+                  backgroundColor: "#fafafa",
+                  border: "1px solid #eeeeee",
+                }}
+              >
 
-                <div className="display-3">
-                  🍽️
-                </div>
-
-                <h4 className="fw-bold mt-3">
+                <h4 className="fw-bold">
                   No food items found
                 </h4>
+
+                <p className="text-muted mb-0">
+                  Try searching with a different food name.
+                </p>
 
               </div>
             )}
 
         </div>
-
       </section>
 
     </div>

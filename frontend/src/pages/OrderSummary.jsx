@@ -41,12 +41,19 @@ function OrderSummary() {
 
   if (loading) {
     return (
-      <div className="container py-5 text-center">
-        <div className="spinner-border text-success"></div>
+      <div className="container py-5">
+        <div
+          className="text-center py-5 rounded-4"
+          style={{
+            backgroundColor: "#f8faf8",
+          }}
+        >
+          <div className="spinner-border text-success"></div>
 
-        <p className="text-muted mt-3">
-          Loading your order...
-        </p>
+          <p className="text-muted mt-3 mb-0">
+            Loading your order...
+          </p>
+        </div>
       </div>
     );
   }
@@ -54,7 +61,7 @@ function OrderSummary() {
   if (error) {
     return (
       <div className="container py-5">
-        <div className="alert alert-danger">
+        <div className="alert alert-danger rounded-4">
           {error}
         </div>
       </div>
@@ -66,21 +73,46 @@ function OrderSummary() {
   }
 
   return (
-    <div>
+    <div className="bg-white">
 
       {/* Success Header */}
-      <section className="bg-light py-5">
-        <div className="container text-center">
+      <section
+        className="py-5"
+        style={{
+          background:
+            "linear-gradient(135deg, #f3f8f4 0%, #fff8f0 100%)",
+        }}
+      >
+        <div className="container text-center py-4">
 
-          <div className="display-3 mb-3">
-            ✅
+          {/* Success Icon */}
+          <div
+            className="mx-auto mb-4 d-flex align-items-center justify-content-center rounded-circle"
+            style={{
+              width: "80px",
+              height: "80px",
+              backgroundColor: "#dff3e5",
+            }}
+          >
+            <span
+              className="fw-bold"
+              style={{
+                color: "#198754",
+                fontSize: "1.1rem",
+              }}
+            >
+              Done
+            </span>
           </div>
 
-          <h1 className="fw-bold">
+          <h1
+            className="fw-bold mb-3"
+            style={{ fontSize: "clamp(2rem, 5vw, 3rem)" }}
+          >
             Order Placed Successfully!
           </h1>
 
-          <p className="text-muted">
+          <p className="text-muted fs-5 mb-0">
             Thank you for ordering from Suvai.
           </p>
 
@@ -98,37 +130,77 @@ function OrderSummary() {
 
               <div className="card border-0 shadow-sm rounded-4">
 
-                <div className="card-body p-4">
+                <div className="card-body p-4 p-lg-5">
 
-                  <div className="d-flex justify-content-between align-items-center mb-4">
+                  <div className="mb-4">
 
-                    <div>
-                      <h4 className="fw-bold mb-1">
-                        Order #{order.id}
-                      </h4>
+                    <p className="text-success fw-semibold small mb-2">
+                      ORDER DETAILS
+                    </p>
 
-                      <small className="text-muted">
-                        {new Date(
-                          order.created_at
-                        ).toLocaleString()}
-                      </small>
+                    <div className="d-flex justify-content-between align-items-start gap-3">
+
+                      <div>
+
+                        <h4 className="fw-bold mb-2">
+                          Order #{order.id}
+                        </h4>
+
+                        <small className="text-muted">
+                          {new Date(
+                            order.created_at
+                          ).toLocaleString()}
+                        </small>
+
+                      </div>
+
+                      <span className="badge bg-warning text-dark rounded-pill px-3 py-2">
+                        {order.status}
+                      </span>
+
                     </div>
-
-                    <span className="badge bg-warning text-dark">
-                      {order.status}
-                    </span>
 
                   </div>
 
-                  <hr />
 
-                  <div className="d-flex justify-content-between">
+                  <hr className="my-4" />
 
-                    <span className="fw-semibold">
+
+                  {/* Order Status */}
+                  <div
+                    className="p-3 rounded-3 mb-4"
+                    style={{
+                      backgroundColor: "#f8faf8",
+                    }}
+                  >
+                    <div className="d-flex justify-content-between align-items-center">
+
+                      <div>
+                        <small className="text-muted d-block">
+                          Current Status
+                        </small>
+
+                        <span className="fw-semibold">
+                          {order.status}
+                        </span>
+                      </div>
+
+                      <span className="text-success fw-semibold">
+                        Processing
+                      </span>
+
+                    </div>
+                  </div>
+
+
+                  {/* Total */}
+                  <div className="d-flex justify-content-between align-items-center">
+
+                    <span className="fw-bold fs-5">
                       Total Amount
                     </span>
 
-                    <span className="fw-bold text-success fs-5">
+                    <span className="fw-bold text-success fs-4">
                       Rs.{" "}
                       {Number(
                         order.total_amount
@@ -142,20 +214,21 @@ function OrderSummary() {
               </div>
 
 
-              <div className="text-center mt-4">
+              {/* Navigation Buttons */}
+              <div className="d-flex justify-content-center gap-2 flex-wrap mt-4">
 
                 <Link
                   to="/menu"
-                  className="btn btn-success me-2"
+                  className="btn btn-success px-4 py-2 rounded-3"
                 >
                   Continue Shopping
                 </Link>
 
                 <Link
                   to="/"
-                  className="btn btn-outline-success"
+                  className="btn btn-outline-success px-4 py-2 rounded-3"
                 >
-                  Home
+                  Back to Home
                 </Link>
 
               </div>

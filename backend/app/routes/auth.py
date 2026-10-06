@@ -56,6 +56,15 @@ def get_db():
 
 # Password-a hash panrom
 def hash_password(password: str):
+    # bcrypt maximum 72 bytes support pannum
+    password_bytes = password.encode("utf-8")
+
+    if len(password_bytes) > 72:
+        raise HTTPException(
+            status_code=400,
+            detail="Password must be 72 bytes or less"
+        )
+
     return pwd_context.hash(password)
 
 
@@ -64,6 +73,11 @@ def verify_password(
     plain_password: str,
     hashed_password: str
 ):
+    password_bytes = plain_password.encode("utf-8")
+
+    if len(password_bytes) > 72:
+        return False
+
     return pwd_context.verify(
         plain_password,
         hashed_password
